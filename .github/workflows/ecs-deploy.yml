@@ -1,4 +1,3 @@
-
 name: Deploy to Amazon ECS
 
 on:
@@ -20,7 +19,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: <your-region>
+        aws-region: us-east-1
 
     - name: Login to Amazon ECR
       id: login-ecr
@@ -28,8 +27,8 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: <your-repo-name>
+        ECR_REGISTRY: 989265186574.dkr.ecr.us-east-1.amazonaws.com
+        ECR_REPOSITORY: nodejs-app
         IMAGE_TAG: latest
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
@@ -39,13 +38,13 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: <path-to-your-task-definition.json>
-        container-name: <your-container-name>
-        image: ${{ steps.login-ecr.outputs.registry }}/<your-repo-name>:latest
+        task-definition: task-definition.json
+        container-name: nodejs-app
+        image: 989265186574.dkr.ecr.us-east-1.amazonaws.com/nodejs-app:latest
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        service: <your-ecs-service-name>
-        cluster: <your-ecs-cluster-name>
+        service: nodejs-app-service
+        cluster: wsh-test
         task-definition: ${{ steps.task-def.outputs.task-definition }}
