@@ -1,23 +1,14 @@
-# Use an official Node runtime as a parent image
-FROM node:14
+# Use the Nginx image from Docker Hub
+FROM nginx:alpine
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+# Remove the default nginx index page
+RUN rm -rf /usr/share/nginx/html/*
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy the static HTML file
+COPY index.html /usr/share/nginx/html
 
-# Install any needed packages specified in package.json
-RUN npm install
+# Expose port 80
+EXPOSE 80
 
-# Bundle app source inside the Docker image
-COPY . .
-
-# Make port 3000 available to the world outside this container
-EXPOSE 3000
-
-# Define environment variable
-ENV PORT=3000
-
-# Run app.js when the container launches
-CMD ["node", "app.js"]
+# Start Nginx when the container has provisioned
+CMD ["nginx", "-g", "daemon off;"]
