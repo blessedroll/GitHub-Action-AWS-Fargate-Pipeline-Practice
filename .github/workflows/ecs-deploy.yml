@@ -40,8 +40,7 @@ jobs:
       with:
         task-definition: task-definition.json
         container-name: nodejs-app
-        image: 989265186574.dkr.ecr.us-east-1.amazonaws.com/nodejs-app:latest
-
+        image: 989265186574.dkr.ecr.us-east-1.amazonaws.com/nginx-static:latest
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
